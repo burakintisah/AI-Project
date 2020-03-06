@@ -50,7 +50,7 @@ def get_data():
     # clicking the reveal button popped up
     browser.find_element_by_xpath(
         """//*[@id="root"]/div/div[2]/div[2]/article/div[2]/button[2]/div""").click()
-    time.sleep(0.1)
+    time.sleep(1)
     # closing the pop-up with the X button
     browser.find_element_by_xpath(
         """//*[@id="root"]/div/div[2]/div[2]/span""").click()
@@ -68,8 +68,22 @@ def get_data():
     across_str = clues[0].text
     down_str = clues[1].text
 
-    across_clues = across_str.split("\n")
-    down_clues = down_str.split("\n")
+    across = across_str.split("\n")
+    down = down_str.split("\n")
+
+    across_clues = []
+    down_clues = []
+
+    for i in range (1,len(across),2):
+        word = ""
+        word = across[i] + ":" + across[i+1]
+        across_clues.append(copy.deepcopy(word))
+
+    for i in range (1,len(down),2):
+        word = ""
+        word = down[i] + ":" + down[i+1]
+        down_clues.append(copy.deepcopy(word))
+
 
     # scrape cells with answers from page content
     cells_table = browser.find_element_by_xpath('//*[@data-group="cells"]').find_element_by_xpath('//*[@role="cell"]')
@@ -147,47 +161,36 @@ def get_data():
             num_row.clear()
 
     print("NUM MATRIX")
-    for n in num_matrix:
-        print(n)
+    print(num_matrix)
     print()
 
-    for acr in across_clues:
-        print(acr)
-    print()
-
-    for dow in down_clues:
-        print(dow)
+    print(across_clues)
+    print(down_clues)
     print()
 
     across_match = []
 
     count = 0
-    for i in range (1,len(across_clues),2):
-        row = []
-        row.append(across_clues[i])
-        row.append(across_clues[i+1])
-        row.append(a_answers[count])
-        count = count +1
+    for i in range (0,len(across_clues)):
+        row = ""
+        row = across_clues[i] + ":" + a_answers[count]
+        count = count + 1
         across_match.append(row)
 
-    for i in across_match:
-        print(i)
+    print(across_match)
     print()
 
     down_match = []
     count = 0
-    for i in range(1, len(down_clues), 2):
-        row = []
-        row.append(down_clues[i])
-        row.append(down_clues[i + 1])
-        row.append(d_answers[count])
+    for i in range(0, len(down_clues)):
+        row = ""
+        row = down_clues[i] + ":" + d_answers[count]
         count = count + 1
         down_match.append(row)
 
-    for i in down_match:
-        print(i)
+    print(down_match)
 
-
-
+    return char_matrix,num_matrix,across_clues,down_clues,answer_across,answer_down,across_match,down_match
 
 get_data()
+
