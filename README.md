@@ -1,6 +1,6 @@
 # CS 461 - AI Project
 ## Project Demo:
-  Displaying the data from the New York Times Mini Puzzle
+  Displaying data from the New York Times Mini Puzzle
 
 ## Team:
 - Merve Nur AKYER
