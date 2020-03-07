@@ -19,6 +19,7 @@ class scraper:
     def get_data(self):
         # example option: add 'incognito' command line arg to options
         option = webdriver.ChromeOptions()
+
         option.add_argument("--incognito")
 
         # create new instance of chrome in incognito mode
@@ -115,18 +116,20 @@ class scraper:
 
         # getting across answers
         answer_across = []
-        a_answers = []
+        word = ""
         for row in char_matrix:
-            word = ""
+            if len(word) != 0:
+                answer_across.append(copy.deepcopy(word))
+                word = ""
             for c in row:
+                print (c)
                 if c != "":
                     word = word + c
                 else:
-                    word = word + " "
-            words = word.split(" ")
-            for i in words:
-                a_answers.append(i)
-            answer_across.append(copy.deepcopy(words))
+                    if len(word) != 0:
+                        answer_across.append(copy.deepcopy(word))
+                        word = ""
+
 
         print("ACROSS ANSWERS")
         print(answer_across)
@@ -134,19 +137,19 @@ class scraper:
 
         # getting the down answers
         answer_down = []
-        d_answers = []
+        word = ""
         for i in range(0, 5):
-            word = ""
+            if len(word) != 0:
+                answer_down.append(copy.deepcopy(word))
+                word = ""
             for j in range(0, 5):
                 c = char_matrix[j][i]
                 if c != "":
                     word = word + c
                 else:
-                    word = word + " "
-            words = word.split(" ")
-            for i in words:
-                d_answers.append(i)
-            answer_down.append(copy.deepcopy(words))
+                    if len(word) != 0:
+                        answer_down.append(copy.deepcopy(word))
+                        word = ""
 
         print("DOWN ANSWERS")
         print(answer_down)
@@ -180,7 +183,7 @@ class scraper:
         count = 0
         for i in range(0, len(across_clues)):
             row = ""
-            row = across_clues[i] + ":" + a_answers[count]
+            row = across_clues[i] + ":" + answer_across[count]
             count = count + 1
             across_match.append(row)
 
@@ -191,7 +194,7 @@ class scraper:
         count = 0
         for i in range(0, len(down_clues)):
             row = ""
-            row = down_clues[i] + ":" + d_answers[count]
+            row = down_clues[i] + ":" + answer_down[count]
             count = count + 1
             down_match.append(row)
 
