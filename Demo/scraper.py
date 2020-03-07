@@ -89,13 +89,20 @@ class scraper:
             down_clues.append(copy.deepcopy(word))
 
         # scrape cells with answers from page content
-        cells_table = browser.find_element_by_xpath('//*[@data-group="cells"]').find_element_by_xpath('//*[@role="cell"]')
-        chars = cells_table.find_elements_by_xpath('//*[@text-anchor="middle"]')
+        cell = browser.find_element_by_xpath('//*[@data-group="cells"]').find_elements_by_tag_name("g")
 
         char_matrix = []
         char_row = []
-        for re in chars:
-            char_row.append(re.text)
+        for a in cell:
+            text = a.text.replace("\n", ".")
+            print(text)
+            texts = text.split(".")
+            print(texts)
+            if self.is_integer(texts[0]):
+                char_row.append(texts[1])
+            else:
+                char_row.append(texts[0])
+
             if len(char_row) == 5:
                 char_matrix.append(copy.deepcopy(char_row))
                 char_row.clear()
@@ -148,10 +155,7 @@ class scraper:
         # Getting numbers on the new york times puzzle table which indicates the starting char of the clues
         num_matrix = []
         num_row = []
-
-        cll = browser.find_element_by_xpath('//*[@data-group="cells"]').find_elements_by_tag_name("g")
-
-        for a in cll:
+        for a in cell:
             text = a.text.replace("\n", ".")
             texts = text.split(".")
             if self.is_integer(texts[0]):
