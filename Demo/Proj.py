@@ -47,14 +47,55 @@ for i in range(5):
         w.create_rectangle(x, y, x + size, y + size,  outline = 'red', width=5)
 
 down =""
+for clue in clue_down:
+    print(clue)
+    if len(clue) > 50:
+        longClue = clue.split()
+        i = 0
+        clueToDraw = ""
+        while i <= len(longClue)/2 :
+            if i == 0:
+                clueToDraw = clueToDraw + longClue[i] + "  "
+            else:
+                clueToDraw = clueToDraw + longClue[i] + " "
+            i += 1
+        clueToDraw = clueToDraw + "\n" + "   "
+        while i < len(longClue):
+            clueToDraw = clueToDraw + longClue[i] + " "
+            i += 1
+    else:
+        clueToDraw = clue
+    down = down + clueToDraw + "\n"
+
+across =""
+print("across")
 for clue in clue_across:
-    print(len(clue))
-    down = down + clue + "\n"
+    print(clue)
+    if len(clue) > 50:
+        longClue = clue.split()
+        i = 0
+        clueToDraw = ""
+        while i <= len(longClue)/2 :
+            if i == 0:
+                clueToDraw = clueToDraw + longClue[i] + "  "
+            else:
+                clueToDraw = clueToDraw + longClue[i] + " "
+            i += 1
+        clueToDraw = clueToDraw + "\n" + "   "
+        while i < len(longClue):
+            clueToDraw = clueToDraw + longClue[i] + " "
+            i += 1
+    else:
+        clueToDraw = clue
+    across = across + clueToDraw + "\n"
+
+
 
 w.create_text(570, 30,  text="Across", anchor="nw",font="Courier 20 bold" )
-w.create_text(570, 60,  text=down, anchor="nw",font="Courier 8" )
+w.create_text(570, 60,  text=across, anchor="nw",font="Courier 8" )
 
 w.create_text(1000, 30,  text="Down", anchor="nw",font="Courier 20 bold" )
+w.create_text(1000, 60,  text=down, anchor="nw",font="Courier 8" )
 
 w.create_text(1100, 700,  text="ArcticFoxes", anchor="nw",font="Courier 15 bold")
 
