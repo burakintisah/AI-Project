@@ -42,16 +42,16 @@ class scraper:
         # clicking the first "OKAY" button at the beginning
         browser.find_element_by_xpath(
             """//*[@id="root"]/div/div/div[4]/div/main/div[2]/div/div[2]/div[3]/div/article/div[2]/button/div/span""").click()
-        time.sleep(0.1)
+        time.sleep(0.3)
         # revealing the solution of the puzzle first
         # first click reveal button
         browser.find_element_by_xpath(
             """//*[@id="root"]/div/div/div[4]/div/main/div[2]/div/div/ul/div[2]/li[2]/button""").click()
-        time.sleep(0.1)
+        time.sleep(0.3)
         # clicking the puzzle button
         browser.find_element_by_xpath(
             """//*[@id="root"]/div/div/div[4]/div/main/div[2]/div/div/ul/div[2]/li[2]/ul/li[3]/a""").click()
-        time.sleep(0.1)
+        time.sleep(0.3)
         # clicking the reveal button popped up
         browser.find_element_by_xpath(
             """//*[@id="root"]/div/div[2]/div[2]/article/div[2]/button[2]/div""").click()
@@ -96,9 +96,7 @@ class scraper:
         char_row = []
         for a in cell:
             text = a.text.replace("\n", ".")
-            print(text)
             texts = text.split(".")
-            print(texts)
             if self.is_integer(texts[0]):
                 char_row.append(texts[1])
             else:
@@ -118,17 +116,16 @@ class scraper:
         answer_across = []
         word = ""
         for row in char_matrix:
-            if len(word) != 0:
-                answer_across.append(copy.deepcopy(word))
-                word = ""
             for c in row:
-                print (c)
                 if c != "":
                     word = word + c
                 else:
                     if len(word) != 0:
                         answer_across.append(copy.deepcopy(word))
                         word = ""
+            if len(word) != 0:
+                answer_across.append(copy.deepcopy(word))
+                word = ""
 
 
         print("ACROSS ANSWERS")
@@ -139,9 +136,6 @@ class scraper:
         answer_down = []
         word = ""
         for i in range(0, 5):
-            if len(word) != 0:
-                answer_down.append(copy.deepcopy(word))
-                word = ""
             for j in range(0, 5):
                 c = char_matrix[j][i]
                 if c != "":
@@ -150,7 +144,9 @@ class scraper:
                     if len(word) != 0:
                         answer_down.append(copy.deepcopy(word))
                         word = ""
-
+            if len(word) != 0:
+                answer_down.append(copy.deepcopy(word))
+                word = ""
         print("DOWN ANSWERS")
         print(answer_down)
         print()
@@ -171,7 +167,9 @@ class scraper:
                 num_row.clear()
 
         print("NUM MATRIX")
-        print(num_matrix)
+        for a in num_matrix:
+            print(a)
+
         print()
 
         print(across_clues)
@@ -200,5 +198,5 @@ class scraper:
 
         print(down_match)
         browser.quit()
-        return char_matrix, num_matrix, across_clues, down_clues, answer_across, answer_down, across_match, down_match
+        return char_matrix, num_matrix, across_clues, down_clues, across_match, down_match
 

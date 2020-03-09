@@ -11,19 +11,8 @@ dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
 
 w = Canvas(master, width=1500, height=1000, bg="white")
 
-letter_matrix = []
-litle_num_matrix = [[1,2,-1,1,3],
-                    [1,2,-1,1,3],
-                    [1,2,-1,1,3],
-                    [4,4,4,4,4],
-                    [-1,-1,-1,-1,-1]]
-
-clue_down = []
-clue_across = []
-
 sr= scraper()
-
-letter_matrix, litle_num_matrix, clue_across, clue_down, answer_across, answer_down, across_match, down_match= sr.get_data()
+letter_matrix, litle_num_matrix, clue_across, clue_down, across_match, down_match= sr.get_data()
 
 offset_x = 30
 offset_y = 30
@@ -36,24 +25,23 @@ for i in range(5):
 
         letter = letter_matrix[j][i]
         if letter == "":
-            w.create_rectangle(x, y, x + size, y + size, fill="black", outline='red', width=5)
+            w.create_rectangle(x, y, x + size, y + size, fill="black", outline="black", width   =2)
         else:
-            w.create_rectangle(x, y, x + size, y + size, outline='red', width=5)
-            w.create_text(x + 50, y + 50, font="Times 40 bold", text=letter )
+            w.create_rectangle(x, y, x + size, y + size, outline="black", width=2)
+            w.create_text(x + 50, y + 50, font="Times 40 bold", text=letter, fill = "blue" )
         num = litle_num_matrix[j][i]
         if num != "-1":
-            w.create_text(x + 10, y + 10, text=str(num) )
+            w.create_text(x + 13, y + 15, text=str(num) , font= "Times 20 bold")
 
-        w.create_rectangle(x, y, x + size, y + size,  outline = 'red', width=5)
+w.create_rectangle(30, 30, 530, 530,  outline = 'black', width=5)
 
 down =""
 for clue in clue_down:
-    print(clue)
-    if len(clue) > 50:
+    if len(clue) > 40:
         longClue = clue.split()
         i = 0
         clueToDraw = ""
-        while i <= len(longClue)/2 :
+        while i <= len(longClue)/2 +  1 :
             if i == 0:
                 clueToDraw = clueToDraw + longClue[i] + "  "
             else:
@@ -70,12 +58,11 @@ for clue in clue_down:
 across =""
 print("across")
 for clue in clue_across:
-    print(clue)
-    if len(clue) > 50:
+    if len(clue) > 40:
         longClue = clue.split()
         i = 0
         clueToDraw = ""
-        while i <= len(longClue)/2 :
+        while i <= len(longClue)/2 + 1:
             if i == 0:
                 clueToDraw = clueToDraw + longClue[i] + "  "
             else:
@@ -92,12 +79,12 @@ for clue in clue_across:
 
 
 w.create_text(570, 30,  text="Across", anchor="nw",font="Courier 20 bold" )
-w.create_text(570, 60,  text=across, anchor="nw",font="Courier 8" )
+w.create_text(570, 80,  text=across, anchor="nw",font="Courier 12" )
 
 w.create_text(1000, 30,  text="Down", anchor="nw",font="Courier 20 bold" )
-w.create_text(1000, 60,  text=down, anchor="nw",font="Courier 8" )
+w.create_text(1000, 80,  text=down, anchor="nw",font="Courier 12" )
 
-w.create_text(1100, 700,  text="ArcticFoxes", anchor="nw",font="Courier 15 bold")
+w.create_text(540, 550,  text="ArcticFoxes", anchor="nw",font="Courier 15 bold")
 
 
 w.pack()
@@ -106,7 +93,7 @@ def tick():
     w.delete("upd")
     now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-    w.create_text(1100, 750, text=dt_string, anchor="nw",font="Courier 15 bold", tag="upd")
+    w.create_text(540, 580, text=dt_string, anchor="nw",font="Courier 15 bold", tag="upd")
 
     w.after(1000, tick)
 w.after(1, tick)
