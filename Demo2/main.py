@@ -2,16 +2,17 @@ from tkinter import *
 from datetime import datetime
 from scraper import scraper
 from ClueGenerator import ClueGenerator
+
 master = Tk()
 master.title("ArcticFoxes")
 now = datetime.now()
 dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
 
-
 w = Canvas(master, width=1500, height=1000, bg="white")
 
 sr= scraper()
 letter_matrix, litle_num_matrix, clue_across, clue_down, across_match, down_match = sr.get_data()
+
 cg = ClueGenerator()
 new_clues_down, new_clues_across = cg.get_new_clues(across_match, down_match)
 
@@ -62,7 +63,6 @@ for clue in clue_down:
     down = down + clueToDraw + "\n"
 
 across =""
-print("across")
 for clue in clue_across:
     if len(clue) > 40:
         longClue = clue.split()
@@ -82,6 +82,47 @@ for clue in clue_across:
         clueToDraw = clue
     across = across + clueToDraw + "\n"
 
+new_down =""
+for clue in new_clues_down:
+    if len(clue) > 40:
+        longClue = clue.split()
+        i = 0
+        clueToDraw = ""
+        while i <= len(longClue)/2 +  1 :
+            if i == 0:
+                clueToDraw = clueToDraw + longClue[i] + "  "
+            else:
+                clueToDraw = clueToDraw + longClue[i] + " "
+            i += 1
+        clueToDraw = clueToDraw + "\n" + "   "
+        while i < len(longClue):
+            clueToDraw = clueToDraw + longClue[i] + " "
+            i += 1
+    else:
+        clueToDraw = clue
+    new_down = new_down + clueToDraw + "\n"
+
+new_across = ""
+for clue in new_clues_across:
+    if len(clue) > 40:
+        longClue = clue.split()
+        i = 0
+        clueToDraw = ""
+        while i <= len(longClue)/2 + 1:
+            if i == 0:
+                clueToDraw = clueToDraw + longClue[i] + "  "
+            else:
+                clueToDraw = clueToDraw + longClue[i] + " "
+            i += 1
+        clueToDraw = clueToDraw + "\n" + "   "
+        while i < len(longClue):
+            clueToDraw = clueToDraw + longClue[i] + " "
+            i += 1
+    else:
+        clueToDraw = clue
+    new_across = new_across + clueToDraw + "\n"
+
+
 
 
 w.create_text(570, 30,  text="Across", anchor="nw",font="Courier 20 bold" )
@@ -91,10 +132,10 @@ w.create_text(1000, 30,  text="Down", anchor="nw",font="Courier 20 bold" )
 w.create_text(1000, 80,  text=down, anchor="nw",font="Courier 12" )
 
 w.create_text(570, 270,  text="New Across", anchor="nw",font="Courier 20 bold" )
-#w.create_text(570, 80,  text=new_across, anchor="nw",font="Courier 12" )
+w.create_text(570, 320,  text=new_across, anchor="nw",font="Courier 12" )
 
 w.create_text(1000, 270,  text="New Down", anchor="nw",font="Courier 20 bold" )
-#w.create_text(1000, 80,  text=new_down, anchor="nw",font="Courier 12" )
+w.create_text(1000, 320,  text=new_down, anchor="nw",font="Courier 12" )
 
 w.create_text(300, 550,  text="ArcticFoxes", anchor="nw",font="Courier 15 bold")
 

@@ -1,14 +1,16 @@
 from selenium import webdriver
 import re
-import numpy as np
+from difflib import SequenceMatcher
 
 class DictionaryScraper:
-    def __init__(self):
+    def __init__(self, model):
         options = webdriver.ChromeOptions()
         options.add_argument('--ignore-certificate-errors')
         options.add_argument('--incognito')
-        # options.add_argument('--headless')
+        options.add_argument('--lang=en-us')
+        #options.add_argument('--headless')
         self.driver = webdriver.Chrome("./chromedriver.exe", options=options)
+        self.model = model
 
     """
     :parameter (self, keyword)
@@ -92,7 +94,7 @@ class DictionaryScraper:
         for i in arr:
             words = i.split(",")
             for j in words:
-                all_synonyms.append(j.strip())
+                all_synonyms.append(j.strip().lower())
 
         try:
             header = all_synonyms[0]
@@ -109,16 +111,58 @@ class DictionaryScraper:
     :return (all_meanings, all_synonyms)
     """
     def MeriamScraper(self,keyword):
-        all_meanings = self.MeriamScraperMeaning(keyword)
-        all_synonyms = self.MeriamScraperSynonym(keyword)
+        all_meanings = self.__MeriamScraperMeaning(keyword)
+        all_synonyms = self.__MeriamScraperSynonym(keyword)
         return (all_meanings, all_synonyms)
+
+
+    """
+    It is a pretrained model, which gives output which are the most similar words in the model.
+    :parameter (self, keyword)
+    :return (all_meanings, all_synonyms)
+    """
+    def get_words_from_model (self,word):
+        try:
+            prediction_similar = self.model.most_similar(positive=[word], topn=10)
+            # print(prediction_similar)
+
+            if prediction_similar[0][1] > 0.60:
+                # print("Prediction has sufficient accuracy for the word: {} ".format(word.upper()))
+                model_result = prediction_similar
+            else:
+                # print("not sufficient accuracy for the word: {}".format(word.upper()))
+                # print("best accuracy: ", str(prediction_similar[0][1]))
+                model_result = []
+                return model_result
+        except:
+            # print("could not find the word: {}".format(word.upper()))
+            model_result = []
+            return model_result
+        # searching the predictions
+        less_similars = []
+        for check in model_result:
+            if check[1] < float(0.50):
+                less_similars.append(check)
+        for i in less_similars:
+            model_result.remove(i)
+
+        # eliminate if the word is very similar to the word given
+        # since we dont want to show the answer of the clue
+        result = []
+        for i in model_result:
+            similarity = self.__similar(word.lower(), i[0].lower())
+            #print(similarity)
+            if similarity < 0.5 :
+                result.append(i[0].lower())
+
+        return result
 
 
     """
     :parameter (self, keyword)
     :return all_meanings
     """
-    def MeriamScraperMeaning(self, keyword):
+    def __MeriamScraperMeaning(self, keyword):
         # to be able to direct to the correct site we are using lower function which makes it all lower case letter
         self.driver.get("https://www.merriam-webster.com/dictionary/" + keyword.lower())
 
@@ -137,16 +181,6 @@ class DictionaryScraper:
             # getting the object which includes the text
             meaning_elements = definition.find_elements_by_class_name("dtText")
 
-            try:
-                # checking wheter header elements are matching with the keyword given
-                header_element = definition.find_element_by_tag_name("em")
-                header = header_element.text
-            except:
-                continue
-
-            if (header.lower() != keyword.lower()):
-                continue
-
             # extracting the meanings from the hyper objects
             # first making it string then getting the relevant parts for us
             for meaning in meaning_elements:
@@ -160,12 +194,11 @@ class DictionaryScraper:
                 all_meanings.append(text_found)
         return all_meanings
 
-
     """
     :parameter (self, keyword)
     :return all_synonyms
     """
-    def MeriamScraperSynonym (self, keyword):
+    def __MeriamScraperSynonym (self, keyword):
         # to be able to direct to the correct site we are using lower function which makes it all lower case letter
         self.driver.get("https://www.merriam-webster.com/thesaurus/" + keyword.lower())
         synonyms_header = []
@@ -199,8 +232,64 @@ class DictionaryScraper:
                 each_ = st.split(",")
                 for i in each_:
                     word = i.strip()
-                    all_synoyms.append(word)
+                    all_synoyms.append(word.lower())
 
         return all_synoyms
 
+    """
+    :parameter (self, keyword)
+    :return clue
+    """
+    def get_google_clue(self, word):
+
+        word = word.lower()
+
+        name, definition = self.__google_snippet(word)
+
+        if name == "" or definition == "":
+            return ""
+
+        name = name.strip().lower()
+        definition = definition.strip().lower()
+
+        name_list = name.split()
+
+        clue = ""
+        for n in name_list:
+            if n != word:
+                clue = clue + " " + n
+            else:
+                clue = clue + " ___ "
+
+        clue = clue + ", " + definition
+        return clue
+
+
+    def __google_snippet(self, keyword):
+        name = ""
+        definition = ""
+
+        self.driver.get("https://www.google.com/search?q ="+ str(keyword.lower))
+        webElement = self.driver.find_element_by_name("q")
+        webElement.send_keys( keyword.lower())
+        webElement.submit()
+
+        try:
+            element = self.driver.find_element_by_xpath("//*[@data-attrid=\"title\"]")
+            name = element.text
+        except:
+            name = ""
+
+        try:
+            element = self.driver.find_element_by_xpath("//*[@data-attrid=\"subtitle\"]")
+            definition = element.text
+        except:
+            definition = ""
+
+        return name, definition
+
+
+    def __similar(self, a, b):
+        similarity = SequenceMatcher(None, a, b).ratio()
+        return similarity
 

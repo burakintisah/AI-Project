@@ -181,7 +181,7 @@ class scraper:
         count = 0
         for i in range(0, len(across_clues)):
             row = ""
-            row = (across_clues[i][:2], answer_across[count])
+            row = (across_clues[i][:3], answer_across[count])
             count = count + 1
             across_match.append(row)
 
@@ -192,7 +192,7 @@ class scraper:
         count = 0
         for i in range(0, len(down_clues)):
             row = ""
-            row =( down_clues[i][:2],answer_down[count] )
+            row =(down_clues[i][:3], answer_down[count])
             count = count + 1
             down_match.append(row)
 
