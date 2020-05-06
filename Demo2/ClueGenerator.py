@@ -77,7 +77,6 @@ class ClueGenerator:
             result = meaning_wordnet[0]
 
         print(result.capitalize())
-
         return result.lstrip()
 
 
@@ -116,6 +115,6 @@ class ClueGenerator:
         model = gensim.models.KeyedVectors.load(loadModel)
         return model
 
-
-'''cg = ClueGenerator()
+'''
+cg = ClueGenerator()
 a = cg.generate_clue('desus')'''

@@ -1,13 +1,13 @@
 from selenium import webdriver
 import re
 from difflib import SequenceMatcher
+from googletrans import Translator
 
 class DictionaryScraper:
     def __init__(self, model):
         options = webdriver.ChromeOptions()
         options.add_argument('--ignore-certificate-errors')
         options.add_argument('--incognito')
-        options.add_argument('--lang=en-us')
         #options.add_argument('--headless')
         self.driver = webdriver.Chrome("./chromedriver.exe", options=options)
         self.model = model
@@ -157,6 +157,37 @@ class DictionaryScraper:
 
         return result
 
+    """
+    :parameter (self, keyword)
+    :return clue
+    """
+    def get_google_clue(self, word):
+
+        word = word.lower()
+
+        name, definition = self.__google_snippet(word)
+
+        if name == "" or definition == "":
+            return ""
+
+        name = name.strip().lower()
+        definition = definition.strip().lower()
+
+        translator = Translator()
+        definition = translator.translate(definition).text
+
+        name_list = name.split()
+
+        clue = ""
+        for n in name_list:
+            if n != word:
+                clue = clue + " " + n
+            else:
+                clue = clue + " ___ "
+
+        clue = clue + ", " + definition
+        return clue
+
 
     """
     :parameter (self, keyword)
@@ -236,42 +267,14 @@ class DictionaryScraper:
 
         return all_synoyms
 
-    """
-    :parameter (self, keyword)
-    :return clue
-    """
-    def get_google_clue(self, word):
-
-        word = word.lower()
-
-        name, definition = self.__google_snippet(word)
-
-        if name == "" or definition == "":
-            return ""
-
-        name = name.strip().lower()
-        definition = definition.strip().lower()
-
-        name_list = name.split()
-
-        clue = ""
-        for n in name_list:
-            if n != word:
-                clue = clue + " " + n
-            else:
-                clue = clue + " ___ "
-
-        clue = clue + ", " + definition
-        return clue
-
 
     def __google_snippet(self, keyword):
         name = ""
         definition = ""
 
-        self.driver.get("https://www.google.com/search?q ="+ str(keyword.lower))
+        self.driver.get("https://www.google.com/search?q =" + str(keyword.lower))
         webElement = self.driver.find_element_by_name("q")
-        webElement.send_keys( keyword.lower())
+        webElement.send_keys(keyword.lower())
         webElement.submit()
 
         try:
@@ -287,7 +290,6 @@ class DictionaryScraper:
             definition = ""
 
         return name, definition
-
 
     def __similar(self, a, b):
         similarity = SequenceMatcher(None, a, b).ratio()

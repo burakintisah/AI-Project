@@ -44,19 +44,21 @@ w.create_rectangle(30, 30, 530, 530,  outline = 'black', width=5)
 
 down =""
 for clue in clue_down:
-    if len(clue) > 40:
+    if len(clue) > 35:
         longClue = clue.split()
         i = 0
         clueToDraw = ""
-        while i <= len(longClue)/2 +  1 :
+        len_line = 0
+        while i < len(longClue):
+            if len_line >= 30:
+                clueToDraw = clueToDraw + "\n" + "   "
+                len_line = 0
             if i == 0:
                 clueToDraw = clueToDraw + longClue[i] + "  "
+                len_line = len_line + len(longClue[i]) + 2
             else:
                 clueToDraw = clueToDraw + longClue[i] + " "
-            i += 1
-        clueToDraw = clueToDraw + "\n" + "   "
-        while i < len(longClue):
-            clueToDraw = clueToDraw + longClue[i] + " "
+                len_line = len_line + len(longClue[i])+ 1
             i += 1
     else:
         clueToDraw = clue
@@ -64,19 +66,21 @@ for clue in clue_down:
 
 across =""
 for clue in clue_across:
-    if len(clue) > 40:
+    if len(clue) > 35:
         longClue = clue.split()
         i = 0
         clueToDraw = ""
-        while i <= len(longClue)/2 + 1:
+        len_line = 0
+        while i < len(longClue):
+            if len_line >= 30:
+                clueToDraw = clueToDraw + "\n" + "   "
+                len_line = 0
             if i == 0:
                 clueToDraw = clueToDraw + longClue[i] + "  "
+                len_line = len_line + len(longClue[i]) + 2
             else:
                 clueToDraw = clueToDraw + longClue[i] + " "
-            i += 1
-        clueToDraw = clueToDraw + "\n" + "   "
-        while i < len(longClue):
-            clueToDraw = clueToDraw + longClue[i] + " "
+                len_line = len_line + len(longClue[i])+ 1
             i += 1
     else:
         clueToDraw = clue
@@ -84,45 +88,48 @@ for clue in clue_across:
 
 new_down =""
 for clue in new_clues_down:
-    if len(clue) > 40:
+    if len(clue) > 35:
         longClue = clue.split()
         i = 0
         clueToDraw = ""
-        while i <= len(longClue)/2 +  1 :
+        len_line = 0
+        while i < len(longClue):
+            if len_line >= 30:
+                clueToDraw = clueToDraw + "\n" + "   "
+                len_line = 0
             if i == 0:
                 clueToDraw = clueToDraw + longClue[i] + "  "
+                len_line = len_line + len(longClue[i]) + 2
             else:
                 clueToDraw = clueToDraw + longClue[i] + " "
-            i += 1
-        clueToDraw = clueToDraw + "\n" + "   "
-        while i < len(longClue):
-            clueToDraw = clueToDraw + longClue[i] + " "
+                len_line = len_line + len(longClue[i])+ 1
             i += 1
     else:
         clueToDraw = clue
     new_down = new_down + clueToDraw + "\n"
 
-new_across = ""
+
+new_across =""
 for clue in new_clues_across:
-    if len(clue) > 40:
+    if len(clue) > 35:
         longClue = clue.split()
         i = 0
         clueToDraw = ""
-        while i <= len(longClue)/2 + 1:
+        len_line = 0
+        while i < len(longClue):
+            if len_line >= 30:
+                clueToDraw = clueToDraw + "\n" + "   "
+                len_line = 0
             if i == 0:
                 clueToDraw = clueToDraw + longClue[i] + "  "
+                len_line = len_line + len(longClue[i]) + 2
             else:
                 clueToDraw = clueToDraw + longClue[i] + " "
-            i += 1
-        clueToDraw = clueToDraw + "\n" + "   "
-        while i < len(longClue):
-            clueToDraw = clueToDraw + longClue[i] + " "
+                len_line = len_line + len(longClue[i])+ 1
             i += 1
     else:
         clueToDraw = clue
     new_across = new_across + clueToDraw + "\n"
-
-
 
 
 w.create_text(570, 30,  text="Across", anchor="nw",font="Courier 20 bold" )
@@ -151,4 +158,3 @@ def tick():
     w.after(1000, tick)
 w.after(1, tick)
 master.mainloop()
-

@@ -169,7 +169,17 @@ class scraper:
         print("NUM MATRIX")
         for a in num_matrix:
             print(a)
-
+        add_acc_clue = 0
+        add_down_clue = 0
+        for row in num_matrix:
+            for col in row:
+                if col == '1':
+                    add_acc_clue = num_matrix.index(row)
+                    add_down_clue = row.index(col)
+        print("add acc clue")
+        print(add_acc_clue)
+        print("add acc clue")
+        print(add_down_clue)
         print()
 
         print(across_clues)
@@ -181,7 +191,7 @@ class scraper:
         count = 0
         for i in range(0, len(across_clues)):
             row = ""
-            row = (across_clues[i][:3], answer_across[count])
+            row = (across_clues[i][:3], answer_across[(count + add_acc_clue) % 5])
             count = count + 1
             across_match.append(row)
 
@@ -192,7 +202,7 @@ class scraper:
         count = 0
         for i in range(0, len(down_clues)):
             row = ""
-            row =(down_clues[i][:3], answer_down[count])
+            row =(down_clues[count][:3], answer_down[(count+add_down_clue) % 5])
             count = count + 1
             down_match.append(row)
 
